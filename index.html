@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+        <title>Quiz Time</title>
+        <style>
+            * {
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+    }
+
+    body {
+        background: black;
+    }
+
+    .quizzes{
+        background: #fff;
+        width: 90%;
+        max-width: 600px;
+        margin: 100px auto 0;
+        border-radius: 10px;
+        padding: 30px;
+    }
+
+    .quizzes h1 {
+        font-size: 25px;
+        color: #001e4d;
+        font-weight: 600;   
+        padding-bottom: 30px;
+    }
+
+    .quiz {
+        padding: 20px 0;
+    }
+
+    .quiz h2 {
+        font-size: 18px;
+        color: #001e4d;
+        font-weight: 600;
+    }
+
+    .btn {
+        background: #fff;
+        color: #222;
+        font-weight: 500;
+        width: 100%;
+        border: 1px solid #222;
+        padding: 10px;
+        margin: 10px 0;
+        text-align: left;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn:hover:not([disabled]){
+        background: #222;
+        color: #fff;
+    }
+
+    .btn:disabled{
+        cursor: no-drop;
+    }
+
+    #next-btn {
+        background: #001e4d;
+        color: white;
+        font-weight: 500;
+        width: 150px;
+        border: 0;
+        padding: 10px;
+        margin: 20px auto 0;
+        border-radius: 4px;
+        cursor: pointer;
+        display: none;
+    }
+
+    #next-btn:hover {
+        background-color: aqua;
+    }
+
+    #timer-container {
+        float: right;
+        margin-bottom: 10px;
+    }
+
+    #timer {
+        font-size: 2em;
+        font-weight: bold;
+        color: #ffffff;
+        width: 80px;
+        height: 80px;
+        line-height: 80px;
+        border-radius: 50%;
+        background-color: #333; 
+        text-align: center;
+        position: relative;
+        display: inline-block; 
+    }
+
+    #timer::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 3px solid #ffffff;
+    }
+    
+    .btn.correct {
+        background-color: green;
+        color: white;
+    }
+
+    .btn.incorrect {
+        background-color: red;
+        color: white;
+    }
+
+    .btn.answer {
+        background-color: yellow;
+        color: black;
+    }
+        </style>
+    </head>
+    <body>
+        <div class="quizzes">
+            <div id="timer-container">
+                <div id="timer">30</div>
+            </div>
+            <h1>Quiz for You!</h1>
+            <div class="quiz">
+                <h2 id="question">This is the Question!</h2>
+                <div id="answer-buttons">
+                </div>
+                <button id="next-btn">Next</button>
+            </div>
+        </div>
+        <script>
+            const questions = [
+        {
+        question: "What is HTML?",
+        answers: [
+            { text: "Hyper Text Markup Language", answer: "Correct" },
+            { text: "Hyper Tax Markup Language", answer: "Incorrect" },
+            { text: "Hyper Tixt Markup Language", answer: "Incorrect" },
+            { text: "Hyper Taxi Markup Language", answer: "Incorrect" },
+        ],
+        },
+        {
+        question: "What is CSS?",
+        answers: [
+            { text: "Cascoding Style Sheets", answer: "Incorrect" },
+            { text: "Coscading Style Sheets", answer: "Incorrect" },
+            { text: "Casecading Style Sheets", answer: "Incorrect" },
+            { text: "Cascading Style Sheets", answer: "Correct" },
+        ],
+        },
+        {
+        question: "Inside which HTML element do we put the JavaScript?",
+        answers: [
+            { text: "javascript", answer: "Incorrect" },
+            { text: "script", answer: "Correct" },
+            { text: "scripting", answer: "Incorrect" },
+            { text: "js", answer: "Incorrect" },
+        ],
+        },
+        {
+        question: "Who is making the Web standards?",
+        answers: [
+            { text: "Microsoft", answer: "Incorrect" },
+            { text: "Goole", answer: "Incorrect" },
+            { text: "The World Wide Web Consortium", answer: "Correct" },
+            { text: "Mozilla", answer: "Incorrect" },
+        ],
+        },
+        {
+        question:
+            "Where in an HTML document is the correct place to refer to an external style sheet?",
+        answers: [
+            { text: "At the start of the document", answer: "Incorrect" },
+            { text: "In the <body> section ", answer: "Incorrect" },
+            { text: "At the end of the document", answer: "Incorrect" },
+            { text: "In the head section", answer: "Correct" },
+        ],
+        },
+        {
+        question: "How do you create a function in JavaScript?",
+        answers: [
+            { text: "function myFunction()", answer: "Correct" },
+            { text: "function = myFunction()", answer: "Incorrect" },
+            { text: "function: myFunction()", answer: "Incorrect" },
+            { text: "function - myFunction()", answer: "Incorrect" },
+        ],
+        },
+        {
+        question: "Which HTML tag is used to define an internal style sheet?",
+        answers: [
+            { text: "css", answer: "Incorrect" },
+            { text: "style", answer: "Correct" },
+            { text: "script", answer: "Incorrect" },
+            { text: "js", answer: "Incorrect" },
+        ],
+        },
+        {
+        question: "What is the correct HTML element for inserting a line break?",
+        answers: [
+            { text: "br", answer: "Correct" },
+            { text: "break", answer: "Incorrect" },
+            { text: "rb", answer: "Incorrect" },
+            { text: "breaking", answer: "Incorrect" },
+        ],
+        },
+        {
+        question: "How do you insert a comment in a CSS file?",
+        answers: [
+            { text: "/ This is a comment /", answer: "Incorrect" },
+            { text: "/* This is a comment */", answer: "Incorrect" },
+            { text: "// This is a comment //", answer: "Incorrect" },
+            { text: "// This is a comment", answer: "Correct" },
+        ],
+        },
+        {
+        question: "What does SQL stand for?",
+        answers: [
+            { text: "Structural Queries Language", answer: "Incorrect" },
+            { text: "Structured Queen Language", answer: "Incorrect" },
+            { text: "Structured Question Language", answer: "Incorrect" },
+            { text: "Structured Query Language", answer: "Correct" },
+        ],
+        },
+    ];
+
+    const questionElement = document.getElementById("question");
+    const answerButtons = document.getElementById("answer-buttons");
+    const nextButton = document.getElementById("next-btn");
+    const timerElement = document.getElementById("timer");
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let timer;
+
+    function reloadPage() {
+    location.reload();
+}
+
+function startQuiz() {
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next";
+    timerElement.innerHTML = "30";
+    showQuestion();
+}
+
+    function showQuestion() {
+        resetState();
+        answerButtons.innerHTML = "";  
+
+        let currentQuestion = questions[currentQuestionIndex];
+        let questionNo = currentQuestionIndex + 1;
+        questionElement.innerHTML = questionNo + ". " + currentQuestion.question;
+
+        currentQuestion.answers.forEach((answer) => {
+            const button = document.createElement("button");
+            button.innerHTML = answer.text;
+            button.classList.add("btn");
+            button.addEventListener("click", () => selectAnswer(answer));
+            answerButtons.appendChild(button);
+        });
+
+        startTimer();
+    }
+
+    function handleNextButton() {
+    clearInterval(timer); 
+
+    currentQuestionIndex++;
+
+    if (currentQuestionIndex < questions.length) {
+        showQuestion();
+    } else {
+        showScore();
+    }
+}
+
+function showScore() {
+    resetState();
+    timerElement.innerHTML = "";
+    questionElement.innerHTML = `You scored ${score} out of ${questions.length}!`;
+    nextButton.innerHTML = "Take Quiz Again!";
+    nextButton.style.display = "block";
+
+    var timerContainer = document.getElementById("timer-container");
+    if (timerContainer) {
+        timerContainer.style.display = "none";
+    }
+
+    nextButton.addEventListener("click", reloadPage);
+}
+
+    function resetState() {
+        nextButton.style.display = "block";
+        nextButton.disabled = false;
+
+        while (answerButtons.firstChild) {
+            answerButtons.removeChild(answerButtons.firstChild);
+        }
+    }
+
+    function startTimer() {
+    let timeLeft = 30;
+    timerElement.innerHTML = timeLeft;
+
+    timer = setInterval(function () {
+        timeLeft -= 1;
+        timerElement.innerHTML = timeLeft;
+
+        if (timeLeft < 0) {
+            clearInterval(timer);
+            timerElement.innerHTML = "Time's up!";
+            handleNextButton();
+        }
+    }, 1000);
+}
+
+function selectAnswer(answer) {
+    clearInterval(timer);
+    disableAnswerButtons();
+    highlightAnswer(answer);
+
+    if (answer.answer === "Correct") {
+        score++;
+    } else {
+        const correctButton = Array.from(answerButtons.children).find(
+            (button) =>
+                button.textContent.trim() ===
+                currentQuestion.answers.find((a) => a.answer === "Correct").text.trim()
+        );
+        correctButton.classList.add("correct");
+    }
+
+    nextButton.style.display = "block";
+}
+
+function highlightAnswer(answer) {
+    const buttons = Array.from(answerButtons.children);
+
+    buttons.forEach((button) => {
+        button.classList.remove("correct", "incorrect", "answer");
+
+        if (button.textContent === answer.text) {
+            if (answer.answer === "Correct") {
+                button.classList.add("correct");
+            } else {
+                button.classList.add("incorrect");
+                button.style.backgroundColor = 'red'; 
+            }
+        }
+
+        if (answer.answer === "Incorrect" && button.textContent === answer.text) {
+            button.classList.add("answer");
+        }
+    });
+}
+
+    function disableAnswerButtons() {
+        const buttons = Array.from(answerButtons.children);
+        buttons.forEach((button) => {
+            button.disabled = true;
+        });
+    }
+
+    nextButton.addEventListener("click", handleNextButton);
+
+    startQuiz();
+        </script>
+    </body>
+    </html>
